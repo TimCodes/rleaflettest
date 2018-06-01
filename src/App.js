@@ -10,7 +10,8 @@ import {Circle,
   TileLayer } from "react-leaflet";
 import logo from './logo.svg';
 
-import {HexbinLayer, esrilayertest} from './esrilayertest'
+import {TribalFeatureLayer, esrilayertest} from './esrilayertest'
+import {ItemPropertiesFeatureLayer} from "./ItemPropertiesFeatureLayer";
 import nrFLayer from "./nrFLayer"
 import ZoomBoxControl from "./zoom"
 import { EditControl } from "react-leaflet-draw"
@@ -55,9 +56,19 @@ class App extends Component {
           </BaseLayer>
           <Overlay checked name="Layer group with circles">
           <LayerGroup>
-                <HexbinLayer>
+            <ItemPropertiesFeatureLayer 
+              fURL = "http://waterweb.sbtribes.com/arcgis/rest/services/WellPrac/FeatureServer/0"
+              whereCond = "TAG_NO_ = 373" 
+            />
+                {/* <TribalFeatureLayer
+                  fURL = "http://waterweb.sbtribes.com/arcgis/rest/services/WellPrac/FeatureServer/0" 
+                  tdURL = "http://localhost:51086/api/item/part/welltag/properties/2"
+                  mainHeader = "partno"
+                  secondHeader = "status"
+                  thirdHeader = "flexfield35"
+                /> */}
             
-            </HexbinLayer>
+            
            </LayerGroup>
            
       </Overlay>
