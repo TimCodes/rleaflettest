@@ -12,34 +12,14 @@ class ItemListFeatureLayer extends MapLayer {
     }
     
     getPopUp(){
-        return (
-            `<div class="ui card">
-                <div class="content">
-                
-                <div class="header">
-                    this is the header
-                </div>
-                <div class="meta">
-                 this is the second header 
-                </div>
-                <div class="description">
-                 this is the third header 
-                </div>
-                </div>
-                <div class="extra content">
-                  <div class="ui basic teal fluid button" id = "navp">View Properties</div>
-                </div>
-             </div>`
-            )
+        let popUpPromise =  this.props.onPopUp();
+        popUpPromise.then( (popup) =>  this.state.featureLayer.getPopup().setContent(popup) ) ;
     }
 
     handleLayerClick(){
-        console.log("handle layer click")
-        this.state.featureLayer.getPopup().setContent(this.getPopUp())
+        this.getPopUp();
     }
     createLeafletElement(props) {
-        console.log(" ----- L ------")
-        console.log(L);
         const { fURL, tdURL, whereCond, styleFnc } = props;
         let fLayer = featureLayer({
             url: `${fURL}`,
@@ -53,8 +33,7 @@ class ItemListFeatureLayer extends MapLayer {
                   });
             },
             style: styleFnc || null
-        });
-         
+        }); 
         fLayer.bindPopup(() => "...loading")
         fLayer.on("click", (e) => this.handleLayerClick());
         this.setState({featureLayer : fLayer});

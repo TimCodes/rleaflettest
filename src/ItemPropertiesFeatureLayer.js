@@ -29,35 +29,39 @@ class ItemPropertiesFeatureLayer extends MapLayer {
       
     }
     addPClick(){
-        let nav = document.getElementById("navp")
-        console.log(nav)
-      
+        let nav = document.getElementById("navp");
         nav.addEventListener("click", this.hello)
     }
 	createLeafletElement(props) {
         const { fURL, tdURL, whereCond } = props;
-       
+        const pointStyle = this.props.pointStyle ||  {
+            color: 'white',
+            weight: 1,
+            fillColor: 'darkorange',
+            fillOpacity: 0.6
+        };
+        const defaultStyleFunc =  () => {
+            return {
+                color: 'white',
+                weight: 1,
+                fillColor: 'darkorange',
+                fillOpacity: 0.6
+            }
+        };  
+        const styleFunc = this.props.styleFunc || defaultStyleFunc;
         let fLayer = featureLayer({
             url: `${fURL}`,
             fields: ["*"],
             where: `${whereCond}`,
             pointToLayer: function (geojson, latlng) {
-              //  console.log(geojson)
-                return L.circleMarker(latlng, {
-                    color: 'white',
-                    weight: 1,
-                    fillColor: 'darkorange',
-                    fillOpacity: 0.6
-                  });
-            }    
+                return L.circleMarker(latlng, pointStyle);
+            },
+            style: styleFunc || null    
         });
 
         this.setState({featureLayer: fLayer});  
         fLayer.on("load", (e) => {
-             console.log("---- loaded -----", e.bounds)
-             this.setState({bounds: e.bounds})
-           //  this.context.map.flyToBounds(e.bounds)
-            // this.context.map.fitBounds({_southWest:{lat:42.94033923363183,lng:-112.5},_northEast:{lat:43.004647127794435,lng:-112.412109375}});
+             this.setState({bounds: e.bounds});
         })
        
         return  fLayer.addTo(this.context.map)
@@ -67,8 +71,7 @@ class ItemPropertiesFeatureLayer extends MapLayer {
 
         if(prevState.bounds != this.state.bounds){
              setTimeout(() => {
-             this.setMapBounds()
-                 
+             this.setMapBounds();   
              }, 50);
         }
     }
